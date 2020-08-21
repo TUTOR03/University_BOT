@@ -109,7 +109,7 @@ def get_payment_card(user_id, pay_id):
 		if(pay.status == 2):
 			reply_mes = f'Вывод средст\nЗакрыт: {"Да" if pay.closed else "Нет"}\nПользователь: @{Account.get(Account.id == pay.task.worker).acc_tag}\nСообщение: {pay.pay_data}\n{pay.cost}RUB'
 			keyboard = [
-				[['Зыкрыть',f'close_payment_card_{pay.id}']],
+				[['Закрыть',f'close_payment_card_{pay.id}']],
 				[['Отклонить',f'reject_payment_card_{pay.id}']]
 			]
 			return({
@@ -121,11 +121,11 @@ def get_payment_card(user_id, pay_id):
 			reply_mes = f'Оплата задания\nУникаьный ID: {pay.task.id}\nЗакрыт: {"Да" if pay.closed else "Нет"}\nПользователь: @{Account.get(Account.id == pay.task.worker).acc_tag}\n{pay.cost}RUB'
 			if(pay.task.payed):
 				keyboard = [
-					[['Зыкрыть',f'close_payment_card_{pay.id}']],
+					[['Закрыть',f'close_payment_card_{pay.id}']],
 				]
 			else:
 				keyboard = [
-					[['Подтвердить',f'success_pay_card_{pay.task.id}']]
+					[['Подтвердить',f'success_pay_card_{pay.task.id}']],
 				]
 			return({
 				'ok':True,
@@ -275,7 +275,7 @@ def take_task_card(user_id, task_id):
 		task.worker = user
 		task.status = 2
 		task.save()
-		not_mes = f'\nИсполнитель взял ваш заказ\n{task.title}\n\nТеперь вы можете оплатить его'
+		not_mes = f'\nLimuric взял ваш заказ\n{task.title}\n\nТеперь вы можете оплатить его'
 		return({'ok':True, 'user':Account.get(Account.id == task.user).acc_id, 'not_mes':not_mes})
 	return({'ok':False})
 
@@ -299,7 +299,7 @@ def send_task_answer(task_id):
 	if(task.status == 2 and card_files_ans.exists()):
 		task.status = 3
 		task.save()
-		not_mes = f'Исполнитель отправил вам решение по заданию:\n{task.title}\nТеперь вы можете оценить данную работу, если оплатили ее'
+		not_mes = f'Limuric отправил вам решение по заданию:\n{task.title}\nТеперь вы можете оценить данную работу, если оплатили ее'
 		return({'ok':True,'user':Account.get(Account.id == task.user).acc_id,'message':not_mes})
 	return({'ok':False})
 
@@ -337,7 +337,8 @@ def get_task_card(user_id, task_id):
 			else:
 				status = 'Исполнитель назначен, ожидает оплаты'
 				keyboard = [
-					[['Оплатить',f'pay_task_card_{task_id}']]
+					[['Оплатить',f'pay_task_card_{task_id}']]#,
+					#[['Удалить',f'delete_task_card_{task_id}']] #joma
 				]
 		elif(task.status == 3):
 			if(task.payed):
@@ -354,6 +355,7 @@ def get_task_card(user_id, task_id):
 			status = 'Работа завершена'
 			keyboard = [
 				[['Просмотр ответов',f'show_task_answer_{task_id}_2']],
+				[['Удалить',f'delete_task_card_{task_id}']] #joma
 			]
 
 	elif(user.acc_type == 2):
@@ -414,11 +416,11 @@ def create_timer_chech_answer(user_id, task_id):
 			break
 	if(task.status == 3):
 		keyboard = [
-			[['Подтвердить',f'success_task_answer_{task_id}'],['Отклонить',f'reject_task_answer_{task_id}']]
+			[['Подтвердить ✅',f'success_task_answer_{task_id}'],['Отклонить ❌',f'reject_task_answer_{task_id}']]
 		]
 		reply_mes = 'Данное задание уже на подтверждении'
 		if(not have_timer):
-			reply_mes = 'Вам необходимо подтвердить или отклонить полученную работу в течение 30 минут\nПо прошествии 30 минут работа будет подтверждена автоматически'
+			reply_mes = 'Вам необходимо подтвердить или отклонить полученную работу в течение 15 минут\nПо прошествии 15 минут работа будет подтверждена автоматически'
 			success_timers.append({
 				'task':task_id,
 				'timer':Timer(TIMER_TIME*60,force_success_task_answer, args = [task_id, 1])
@@ -447,7 +449,7 @@ def create_payment(user_id, task_id, message, status):
 		pay = Payment.select().where((Payment.task == task)&(Payment.status == 1))
 		if(not pay.exists()):
 			Payment.create(task = task, pay_data = message, cost = int(task.cost), status = status)
-			reply_mes = f'Чтобы оплатить задание переведите {task.cost}RUB по номеру ..., указав уникальный номер задания'
+			reply_mes = f'Чтобы оплатить задание переведите {task.cost}RUB по номеру:\nСБЕРБАНК: +79322477131, в комментарии к платежу указав уникальный номер задания\n Ваш уникальный номер задания:{task.id}\n\nПосле оплаты ждите подтверждение Администратора.\n(Мои задания📚 => 💎Статус оплаты)\n\n⚠️ Техподдержка - /help'
 			return({'ok':True,'reply_mes':reply_mes})
 		reply_mes = f'Вы уже создали запрос на оплату'
 		return({'ok':False,'reply_mes':reply_mes})
@@ -471,7 +473,7 @@ def success_task_answer(task_id):
 				break
 		task.status = 4
 		task.save()
-		not_mes = f'Заказчик подтвердил заказ\n{task.title}'
+		not_mes = f'Заказчик подтвердил заказ, спасибо за работу!\n Вам доступен вывод средств.\n Оставьте заявку на вывод во вкладке Мои задания📚\n{task.title}'
 		return({'ok':True, 'user':Account.get(Account.id == task.worker).acc_id, 'not_mes':not_mes})
 	return({'ok':False})
 
