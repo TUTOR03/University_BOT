@@ -32,7 +32,7 @@ yandex_token = '381764678:TEST:18219'
 tranzzo_token = '410694247:TEST:ba144a44-10f8-4d9e-b80a-7d36495756a1'
 bot = telebot.TeleBot(token)
 
-main_url = 'https://44b1c3745c28.ngrok.io'
+main_url = 'https://141d163ece33.ngrok.io'
 
 bot.remove_webhook()
 time.sleep(1)
@@ -358,12 +358,12 @@ def get_updates():
 
 				if(user_mes == '/help'):
 					set_user_status(user_id, 'adding_admin_request')
-					reply_mes = 'Пожалуйста опишите вашу проблему\nАдминистратор ответит в течение 24 часов'
+					reply_mes = '❣️ Техподдержка: ❣️\n\n⚠️ Отправьте запрос ОДНИМ сообщением начав его со слов:\n\nЕсли у вас возникла проблема, опишите ее, начав сообщение со слова ПРОБЛЕМА\n\nХотите пополнить ряды команды Limuric, начните сообщение со слова LIMURIC\n\nХотите оставить отзыв или предложение, начните сообщение со слова ОТЗЫВ или ПРЕДЛОЖЕНИЕ'
 					bot.send_message(user_id, reply_mes)
 					return({'ok':True})
 
 				elif(user_mes == '/info'):
-					reply_mes = 'INFO'
+					reply_mes = 'INFO:\n\nПо вопросам и предложениям обращаться сюда: @ari_gu\nИли в техподдержку - команда /help\n\nЧтобы сменить роль с Заказчика на Limuric: /change\nИнфо: /info'
 					bot.send_message(user_id, reply_mes)
 					return({'ok':True})
 
@@ -546,7 +546,7 @@ def get_updates():
 				if(error == 'none'):
 					result = create_admin_request(user_id, user_mes)
 					if(result['ok']):
-						reply_mes = 'Запрос успешно создан, ожидайте ответа'
+						reply_mes = 'Запрос успешно создан, ожидайте ответа! ✉️'
 						bot.send_message(user_id, reply_mes)
 				else:
 					bot.send_message(user_id, error)
