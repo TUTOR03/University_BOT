@@ -55,11 +55,6 @@ class HelpRequest(BaseModel):
 def inicialize_db():
 	db.connect()
 	db.create_tables([Account, Task, Img, Payment, HelpRequest])
-	# Task.create(title = 'Tsk_1', cost='300', user=1,status=0)
-	# Img.create(img_url='test_url', task = 4)
-	# Task.get(Task.id == 4).delete_instance()
-
-	# Task.create(title = 'Tsk_2', cost='400', user=1,status=0)Ы
 
 def change_status(user_id):
 	user = Account.select().where(Account.acc_id == user_id)

@@ -2,7 +2,6 @@
 from flask import Flask, request, abort
 import telebot
 from telebot import types
-import zipfile
 from db import *
 import time
 import logging
@@ -18,19 +17,7 @@ loger_formater = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 logger_handler.setFormatter(loger_formater)
 logger.addHandler(logger_handler)
 
-# shopId 506751
-
-# shopArticleId 538350
-
-# 1111 1111 1111 1026, 12/22, CVC 000.
-
-#{'update_id': 336558998, 'pre_checkout_query': {'id': '2271760126141413696', 'from': {'id': 528935372, 'is_bot': False, 'first_name': 'Artem', 'username': 'TUTORT', 'language_code': 'ru'}, 'currency': 'RUB', 'total_amount': 250000, 'invoice_payload': 'task_card_pay_1'}}
-
-#{'update_id': 336559096, 'message': {'message_id': 680, 'from': {'id': 528935372, 'is_bot': False, 'first_name': 'Artem', 'username': 'TUTORT', 'language_code': 'ru'}, 'chat': {'id': 528935372, 'first_name': 'Artem', 'username': 'TUTORT', 'type': 'private'}, 'date': 1596198647, 'successful_payment': {'currency': 'RUB', 'total_amount': 20000, 'invoice_payload': 'task_card_pay_3', 'telegram_payment_charge_id': '_', 'provider_payment_charge_id': '26b622b2-000f-5000-a000-18199fd120d3'}}}
-
 token = '1112815348:AAHHF1qdZ0XBuUoK46IFLe63pSijokeeRw4'
-yandex_token = '381764678:TEST:18219'
-tranzzo_token = '410694247:TEST:ba144a44-10f8-4d9e-b80a-7d36495756a1'
 bot = telebot.TeleBot(token)
 
 main_url = 'https://b4a60c61ac65.ngrok.io'
@@ -53,10 +40,6 @@ def send_notification(user_id, message):
 def get_updates():
 	ans = request.json
 	# print(ans)
-	# return({'ok':True})
-	# temp = datetime.now()
-	# time.sleep(0.3)
-	# print((temp+timedelta(milliseconds=500)) < datetime.now())
 	# return({'ok':True})
 	if('callback_query' in ans.keys()):
 		user_mes = ans['callback_query']['data']
