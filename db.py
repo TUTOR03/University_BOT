@@ -9,7 +9,7 @@ db = SqliteDatabase('bot_q.db',pragmas={
 CALLDOWN = 1
 success_timers = []
 reject_timers = []
-TIMER_TIME = 1
+TIMER_TIME = 30
 COM_PROC = 7
 
 class BaseModel(Model):
@@ -275,7 +275,7 @@ def take_task_card(user_id, task_id):
 		task.worker = user
 		task.status = 2
 		task.save()
-		not_mes = f'\nИсполнитель взял ваш заказ\n{task.title}\n\nТеперь вы можете оплатить его'
+		not_mes = f'\nИсполнитель взял ваш заказ\n{task.title}\nТеперь вы можете оплатить его'
 		return({'ok':True, 'user':Account.get(Account.id == task.user).acc_id, 'not_mes':not_mes})
 	return({'ok':False})
 
@@ -447,7 +447,7 @@ def create_payment(user_id, task_id, message, status):
 		pay = Payment.select().where((Payment.task == task)&(Payment.status == 1))
 		if(not pay.exists()):
 			Payment.create(task = task, pay_data = message, cost = int(task.cost), status = status)
-			reply_mes = f'Чтобы оплатить задание переведите {task.cost}RUB по номеру ..., указав уникальный номер задания'
+			reply_mes = f'Чтобы оплатить задание переведите {task.cost}RUB по номеру ... Укажите уникальный номер задания в сообщении с оплатой'
 			return({'ok':True,'reply_mes':reply_mes})
 		reply_mes = f'Вы уже создали запрос на оплату'
 		return({'ok':False,'reply_mes':reply_mes})
@@ -516,7 +516,7 @@ def create_reject_message(task_id, user_id, message):
 				reject_timers[reject_timers.index(ob)]['timer'].cancel()
 				reject_timers.remove(ob)
 				break
-		not_mes = f'Заказчик отклонил ваш ответ по заданию\n{task.title}\n{message}'
+		not_mes = f'Заказчик отклонил ваш ответ по заданию\n{task.title}\nСообщение:\n{message}\n Исправьте недочеты или обратитесь в поддержку, если считает, что все сделано правильно'
 		return({'ok':True,'not_mes':not_mes,'user':Account.get(Account.id == task.worker).acc_id})
 	return({'ok':False})
 
@@ -615,5 +615,4 @@ def user_register(user_id, user_type):
 		user.acc_type = user_type
 		user.acc_status = 'waiting'
 		user.save()
-		return({'ok':True})
-	return({'ok':False})
+	return({'ok':True})
