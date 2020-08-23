@@ -23,11 +23,11 @@ bot = telebot.TeleBot(token)
 main_url = 'https://b4a60c61ac65.ngrok.io'
 
 SERVER_IP = '80.240.25.179'
-SERVER_PORT = '5000'
+SERVER_PORT = '8443'
 
 bot.remove_webhook()
 time.sleep(1)
-bot.set_webhook(url = main_url, allowed_updates=['message', 'edited_channel_post', 'callback_query','pre_checkout_query'])
+bot.set_webhook(url = f'https://{SERVER_IP}:{SERVER_PORT}',certificate = open('YOURPUBLIC.pem') , allowed_updates=['message', 'edited_channel_post', 'callback_query','pre_checkout_query'])
 
 logger.info('set webhook')
 
@@ -611,4 +611,4 @@ def create_default_keyboard(mas, one_time):
 
 if(__name__ == '__main__'):
 	inicialize_db()
-	app.run()
+	app.run(host = SERVER_IP, port = SERVER_PORT, debug = False, ssl_context = ('YOURPUBLIC.pem','YOURPRIVATE.key'))

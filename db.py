@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 from peewee import *
 from datetime import timedelta, datetime
 from threading import Timer
