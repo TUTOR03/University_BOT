@@ -404,6 +404,16 @@ def get_updates():
 							bot.send_message(user_id, reply_mes)
 						return({'ok':True})
 
+					elif(acc_is_admin and '/op_admin' in user_mes):
+						user_name = user_mes.split(' ')[1]
+						ans = op_admin(user_name)
+						if(ans['ok']):
+							reply_mes = 'Администратор успшно добавлен'
+						else:
+							reply_mes = 'Пользователь не найден'
+						bot.send_message(user_id, reply_mes)
+						return({'ok':True})
+
 					elif(acc_is_admin and user_mes == '/get_log'):
 						with open('logs.log','r') as file:
 							bot.send_document(user_id,file)

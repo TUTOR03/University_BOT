@@ -81,6 +81,15 @@ def op_worker(user_id, tag_name):
 		return({'ok':True, 'user':user.acc_id, 'not_mes':not_mes})
 	return({'ok':False})
 
+def op_admin(tag_name):
+	user = Account.select().where(Account.acc_tag == tag_name)
+	if(user.exists()):
+		user = user.get()
+		user.is_admin = True
+		user.save()
+		return({'ok':True})
+	return({'ok':False})
+
 def op_worker_status(user_id):
 	user = Account.get(Account.acc_id == user_id)
 	if(user.is_admin):
