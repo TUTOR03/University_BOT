@@ -11,7 +11,10 @@ CALLDOWN = 1
 success_timers = []
 reject_timers = []
 TIMER_TIME = 30
-COM_PROC = 7
+COM_PROC = 8
+PAY_PHONE = ' '
+PAY_CARD = ' '
+
 
 class BaseModel(Model):
 	class Meta:
@@ -348,7 +351,7 @@ def get_task_card(user_id, task_id):
 			if(task.payed):
 				status = ' Ожидает оценки'
 				keyboard = [
-					[['Оценить',f'show_task_answer_{task_id}_1']]
+					[['Посмотреть и оценить ответы',f'show_task_answer_{task_id}_1']]
 				]
 			else:
 				status = 'Ожидает оценки, ожидает оплаты'
@@ -398,7 +401,10 @@ def get_task_card(user_id, task_id):
 			else:
 				keyboard = []
 		elif(task.status == 5):
-			status = 'Работа завершена. Ожидается вывод средств'
+			if(task.payed):
+				status = 'Работа завершена. Вывод средств завершен'
+			else:
+				status = 'Работа завершена. Ожидается вывод средств'
 			keyboard = []
 
 	reply_mes = f'Уникальный ID:{task.id}\n\n🔰 Задание: {task.title}\n\n💰 Цена: {task.cost} руб\n\n🔎 Статус: {status}\n\n💎 Оплачен: {"Да ✅" if task.payed else "Нет ❌"}'
@@ -452,7 +458,7 @@ def create_payment(user_id, task_id, message, status):
 		pay = Payment.select().where((Payment.task == task)&(Payment.status == 1))
 		if(not pay.exists()):
 			Payment.create(task = task, pay_data = message, cost = int(task.cost), status = status)
-			reply_mes = f'Чтобы оплатить задание переведите {task.cost}RUB по номеру ... Укажите уникальный номер задания в сообщении с оплатой'
+			reply_mes = f'Чтобы оплатить задание переведите {task.cost}RUB по номеру телефона или на карту\n{PAY_PHONE}\n{PAY_CARD}\nУкажите уникальный номер задания в сообщении с оплатой\nУникаьный ID:{pay.task.id}'
 			return({'ok':True,'reply_mes':reply_mes})
 		reply_mes = f'Вы уже создали запрос на оплату'
 		return({'ok':False,'reply_mes':reply_mes})

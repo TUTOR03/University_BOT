@@ -53,7 +53,7 @@ def get_updates():
 			if(last_time['ok'] and last_time['status']):
 				logger.info(f'CallBack user_id : {user_id} user_mes : {user_mes}')
 				if('register_' in user_mes):
-					# bot.delete_message(user_id, message_id)
+					bot.delete_message(user_id, message_id)
 					acc_type = int(user_mes.split('_')[1])
 					if(acc_type == 1):
 						ans = user_register(user_id, acc_type)
